@@ -27,9 +27,9 @@ It delivers **real-time, bilingual (Arabic/English)** recommendations through a 
 ### 🌱 Core Features
 - **AI-Powered Insights:** Predicts crop diseases, irrigation timing, and pesticide use.  
 - **IoT Integration:** Collects soil data (moisture, salinity, temperature) from sensors.  
-- **Smart Chatbot:** Farmers can ask questions like “When should I irrigate?” and get clear, data-backed answers.  
-- **Dual Interface:** Arabic + English accessibility for both local and international users.  
-- **Real-Time Dashboard:** Displays analytics and visual insights on crop and soil health.
+- **Smart Chatbot:** Farmers can ask “When should I irrigate?” and receive clear, data-backed answers.  
+- **Dual Interface:** Arabic + English accessibility for local farmers and policymakers.  
+- **Real-Time Dashboard:** Displays analytics and visual insights on soil and crop health.
 
 ---
 
@@ -64,13 +64,14 @@ Although currently in the **Prototype / MVP stage**, AgriTech AI has already ach
 ### 🧩 Product Development
 - Built a **fully functional, high-fidelity prototype** simulating IoT sensor data and AI recommendations.  
 - Includes **real-time data dashboard** + **AI chatbot** interface (Arabic & English).  
-- [🎥 Demo Video](https://drive.google.com/file/d/1_Ztp67bj5oJmecwcEwD_eCnMSMMjbm0e/view?usp=sharing)
+- 🎥 [Demo Video (Google Drive)](https://drive.google.com/file/d/1_Ztp67bj5oJmecwcEwD_eCnMSMMjbm0e/view?usp=sharing)  
+- 🌐 [Live Demo Website (GitHub Pages)](https://hassanahmed2ha.github.io/-AgriTech-AI-Hassan-Ahmed-Prototype-/)
 
 ### 🌍 Validation & Recognition
 - **Erasmus+ New Regeneration 2.0 (2025–2028):**  
   Selected among top youth-led sustainability projects in Europe.  
 - **Misr El-Kheir Foundation – Research Capacity Program (2025):**  
-  National-level recognition for scientific research & innovation.  
+  National recognition for scientific research & innovation.  
 - **NASA Space Apps Challenge (2025):**  
   Led UI/UX design for a featured project in the official hackathon showcase.
 
@@ -89,29 +90,28 @@ AgriTech AI follows a **hybrid B2B–B2C model** for long-term scalability.
 ### 1. Subscription Plans
 | Tier | Description |
 |------|--------------|
-| **Basic** | Real-time visualization of soil & weather data. |
-| **Pro** | AI-based irrigation & pesticide recommendations. |
-| **Enterprise** | Advanced analytics, disease prediction, and multi-farm management. |
+| **Basic** | Real-time soil & weather data visualization |
+| **Pro** | AI-based irrigation & pesticide recommendations |
+| **Enterprise** | Advanced analytics, disease prediction, multi-farm management |
 
 ### 2. B2G & Institutional Partnerships
-- Data-as-a-Service (DaaS) contracts with **government bodies**, **NGOs**, and **research centers**.  
-- Supports evidence-based agricultural policymaking.
+Data-as-a-Service (DaaS) contracts with **government bodies**, **NGOs**, and **research centers** for agricultural data analytics and policy planning.
 
 ### 3. Value-Added Services (Future)
-- Computer Vision-based **disease diagnostics**.  
-- Precision irrigation automation via IoT hardware.  
-- AI chatbot consultation & voice-based farmer support.
+- Computer Vision-based **disease diagnostics**  
+- Precision irrigation automation via IoT hardware  
+- AI chatbot consultation & voice-based farmer support  
 
 ---
 
 ## 🌟 Unique Value Proposition (UVP)
 
-AgriTech AI democratizes access to smart farming by making complex AI **understandable, usable, and bilingual**.
+AgriTech AI **democratizes smart farming** by making complex AI **understandable, usable, and bilingual**.
 
 ### 🧭 Why We’re Different
 1. **Farmer-First Design:** Built natively in Arabic and English for real accessibility.  
-2. **Actionable Simplicity:** Converts data into **clear recommendations**, not just charts.  
-3. **AI That Speaks:** Chatbot interface delivers real-time, natural-language insights.
+2. **Actionable Simplicity:** Converts complex data into **clear, real-time recommendations.**  
+3. **AI That Speaks:** Conversational chatbot delivers actionable insights — not graphs.
 
 > “We’re not replacing farmers’ knowledge — we’re amplifying it with AI.”
 
@@ -121,27 +121,19 @@ AgriTech AI democratizes access to smart farming by making complex AI **understa
 
 | Type | Milestone |
 |------|------------|
-| ✅ Product | Interactive prototype completed (AI dashboard + IoT simulation). |
-| 🌍 International | Selected for Erasmus+ “New Regeneration 2.0” (2025–2028). |
-| 🇪🇬 National | Joined Misr El-Kheir’s Research Capacity Program (2025). |
-| 🚀 Innovation | UI/UX Lead for NASA Space Apps Challenge 2025 project showcase. |
+| ✅ Product | Interactive prototype completed (AI dashboard + IoT simulation) |
+| 🌍 International | Selected for Erasmus+ “New Regeneration 2.0” (2025–2028) |
+| 🇪🇬 National | Joined Misr El-Kheir’s Research Capacity Program (2025) |
+| 🚀 Innovation | UI/UX Lead for NASA Space Apps Challenge 2025 showcase |
 
 ---
 
 ## 🎯 Next 6–12 Month Goals
-1. **Build a Functional MVP:** Integrate backend and deploy the first ML models.  
-2. **Launch Pilot Testing:** Partner with 3–5 farms or institutions in Alexandria.  
-3. **Secure Mentorship:** Collaborate with AI experts for ML and IoT development.  
-4. **Attract Seed Funding:** Scale AgriTech AI for full deployment across Egypt.  
-5. **Publish Open-Access Research:** Share technical results through Zenodo and ORCID.
-
----
-
-## 🤝 Support Needed from AI Labs / Partners
-- Technical mentorship in **AI, IoT, and AgriTech** integration.  
-- Access to **open agricultural datasets** for training models.  
-- Collaboration opportunities with sustainability-focused startups.  
-- Capacity-building workshops for ML and precision agriculture.
+1. **Develop MVP:** Deploy first machine learning models in a functional platform.  
+2. **Pilot Testing:** Partner with 3–5 pilot farms or agricultural institutions in Alexandria.  
+3. **Mentorship:** Collaborate with AI and IoT researchers for system improvement.  
+4. **Funding:** Secure early-stage investment and technical partnerships.  
+5. **Open Research:** Publish technical findings through Zenodo and ORCID.
 
 ---
 
@@ -152,20 +144,8 @@ AgriTech AI democratizes access to smart farming by making complex AI **understa
 
 ---
 
-## 🧩 Prototype
-### 🎬 Type
-Visual Mockup / Conceptual Design (Figma-based)
-### 🖼 Description
-A bilingual dashboard demonstrating how farmers input soil and weather data to receive **AI-powered insights** on crop health, irrigation, and pesticide usage.  
-The design prioritizes **clarity, simplicity, and local usability** for farmers in rural Egypt.
-
-🔗 [GitHub Repository](https://github.com/HassanAhmed2Ha/-AgriTech-AI-Hassan-Ahmed-Prototype-)  
-🔗 [Project Demo (Google Drive)](https://drive.google.com/file/d/1_Ztp67bj5oJmecwcEwD_eCnMSMMjbm0e/view?usp=sharing)
-
----
-
 ## 🧭 Mission Statement
-To empower every Egyptian farmer with **intelligent, data-driven tools** that make agriculture more efficient, resilient, and sustainable — bridging the gap between **technology and tradition**.
+Empowering Egyptian farmers with **AI-driven insights** for sustainable, data-informed agriculture — bridging the gap between **technology and tradition**.
 
 ---
 
@@ -176,9 +156,9 @@ You are free to use, adapt, and build upon this work with proper attribution.
 ---
 
 ## 🌍 Acknowledgments
-- **Erasmus+ New Regeneration 2.0** – for mentorship and sustainability frameworks.  
+- **Erasmus+ New Regeneration 2.0** – mentorship in sustainability innovation.  
 - **Misr El-Kheir Foundation** – for research and academic support.  
-- **NASA Space Apps Challenge** – for fostering innovation and cross-disciplinary collaboration.
+- **NASA Space Apps Challenge** – for promoting innovation and collaboration.
 
 ---
 
