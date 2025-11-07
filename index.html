@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriTech AI | Hassan Ahmed Prototype</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><path d=%22M50 95C25 95 5 75 5 50S25 5 50 5c12 0 23 4 31 12%22 fill=%22none%22 stroke=%22%232d6a4f%22 stroke-width=%228%22/><path d=%22M50,20 C60,30 60,45 50,50 C40,45 40,30 50,20 Z%22 fill=%22%2348bb78%22/><path d=%22M50,50 C60,60 55,75 50,80 C45,75 40,60 50,50 Z%22 fill=%22%2348bb78%22/><circle cx=%2270%22 cy=%2220%22 r=%225%22 fill=%22%232d6a4f%22/><path d=%22M65 25 l-10 10%22 fill=%22none%22 stroke=%22%232d6a4f%22 stroke-width=%224%22/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.min.js"></script>
+    <style>
+        :root{--emerald-green:#2d6a4f;--sand-beige:#f4f1de;--azure-blue:#0077b6;--dark-bg:#0d1b2a;--dark-card:#1b263b;--text-light:#e0e1dd;--border-dark:#415a77;--light-bg:#f0f2f5;--light-card:#ffffff;--text-dark:#1c1e21;--border-light:#dee2e6}
+        html.dark{--bg:var(--dark-bg);--card:var(--dark-card);--text:var(--text-light);--border:var(--border-dark)}
+        html:not(.dark){--bg:var(--light-bg);--card:var(--light-card);--text:var(--text-dark);--border:var(--border-light)}
+        html{scroll-behavior:smooth}
+        body{font-family:'Poppins',sans-serif;background-color:var(--bg);color:var(--text);transition:background-color .5s ease,color .5s ease;overflow:hidden}
+        html[dir="rtl"] body{font-family:'Tajawal',sans-serif}
+        .cinematic-zone{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1);transform:scale(.98) translateY(10px);overflow-y:auto;padding:3rem}
+        .cinematic-zone.active{opacity:1;visibility:visible;transform:scale(1) translateY(0)}
+        .card{background-color:var(--card);border:1px solid var(--border);box-shadow:0 10px 30px -15px rgba(0,0,0,.2);border-radius:20px;transition:all .5s cubic-bezier(.4,0,.2,1)}
+        .card:hover{transform:translateY(-8px);box-shadow:0 20px 40px -15px rgba(0,0,0,.3)}
+        .glassmorphism{background:rgba(27,38,59,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(65,90,119,.5)}
+        html:not(.dark) .glassmorphism{background:rgba(255,255,255,.6);border:1px solid rgba(0,0,0,.1)}
+        @keyframes subtle-pan{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+        #main-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;background:url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2832&auto=format&fit=crop') center center/cover;filter:blur(8px) brightness(.6);transform:scale(1.1);animation:subtle-pan 90s ease-in-out infinite}
+        html:not(.dark) #main-bg{filter:blur(8px) brightness(1)}
+        @keyframes pulse-glow{0%,100%{box-shadow:0 0 15px 5px rgba(72,187,120,.4);border-color:rgba(72,187,120,.8)}50%{box-shadow:0 0 25px 10px rgba(72,187,120,.7);border-color:rgba(72,187,120,1)}}
+        .highlight-demo{border-radius:20px;animation:pulse-glow 2s ease-in-out infinite;z-index:100;position:relative;border:2px solid transparent}
+        .water-fill{transition:height 1.5s cubic-bezier(.4,0,.2,1)}
+        #loading-bar{transition:width .3s ease-out}
+        .cinematic-zone::-webkit-scrollbar{width:8px}
+        .cinematic-zone::-webkit-scrollbar-track{background:transparent}
+        .cinematic-zone::-webkit-scrollbar-thumb{background-color:rgba(255,255,255,.2);border-radius:10px}
+        html:not(.dark) .cinematic-zone::-webkit-scrollbar-thumb{background-color:rgba(0,0,0,.2)}
+        .toggle-checkbox:checked + .toggle-label{background-color:var(--emerald-green)}
+        .toggle-checkbox:checked + .toggle-label .toggle-ball{transform:translateX(100%)}
+        html[dir="rtl"] .toggle-checkbox:checked + .toggle-label .toggle-ball{transform:translateX(-100%)}
+        .wizard-step{display:none}
+        .wizard-step.active{display:block}
+        .progress-bar > div{transition:width .5s ease-in-out}
+        #demo-tooltip{background:rgba(27,38,59,.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(65,90,119,.5)}
+        html:not(.dark) #demo-tooltip{background:rgba(255,255,255,.7);border:1px solid rgba(0,0,0,.1);color:var(--text-dark)}
+        @keyframes typing{0%{transform:translateY(0)}50%{transform:translateY(-3px)}100%{transform:translateY(0)}}
+        .typing-indicator span{animation:typing .7s infinite}
+        .typing-indicator span:nth-child(2){animation-delay:.1s}
+        .typing-indicator span:nth-child(3){animation-delay:.2s}
+    </style>
+</head>
+<body>
+    <div id="main-bg"></div>
+    <audio id="ambient-sound" loop><source src="https://cdns-preview-d.dzcdn.net/stream/c-d33379321e64983050a12e5458512140-5.mp3" type="audio/mpeg"></audio>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[100] transition-opacity duration-500">
+        <h1 class="text-4xl font-bold" data-i18n="loading.title">AgriTech AI</h1>
+        <div class="w-1/3 max-w-sm mt-4 bg-gray-700 rounded-full h-2.5">
+            <div id="loading-bar" class="bg-green-500 h-2.5 rounded-full" style="width:0%"></div>
+        </div>
+        <p id="loading-status" class="mt-4 text-gray-400" data-i18n="loading.status">Initializing AI Core...</p>
+        <p class="absolute bottom-10 text-sm text-gray-500" data-i18n="loading.credit">A project by Hassan Ahmed</p>
+    </div>
+
+    <div class="flex h-screen w-screen relative">
+        <!-- Sidebar -->
+        <aside class="w-24 p-6 flex flex-col items-center glassmorphism z-20">
+            <div class="logo mb-16"><svg class="w-12 h-12 text-green-400" viewBox="0 0 100 100"><path d="M50,5 C74.85,5 95,25.15 95,50 C95,62.5 89.2,73.6 80.5,81.1 M19.5,18.9 C10.8,26.4 5,37.5 5,50 C5,74.85 25.15,95 50,95" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/><path d="M50,20 C60,30 60,45 50,50 C40,45 40,30 50,20 Z" fill="currentColor"/><path d="M50,50 C60,60 55,75 50,80 C45,75 40,60 50,50 Z" fill="currentColor"/></svg></div>
+            <nav class="flex-1 flex flex-col items-center justify-center space-y-8">
+                <a href="#dashboard" class="nav-link p-3 rounded-full transition-all transform hover:scale-110" title="Dashboard"><i class="fas fa-th-large text-2xl"></i></a>
+                <a href="#insights" class="nav-link p-3 rounded-full hover:bg-white/10 dark:hover:bg-black/10 transition-all transform hover:scale-110" title="AI Insights"><i class="fas fa-brain text-2xl"></i></a>
+                <a href="#input" class="nav-link p-3 rounded-full hover:bg-white/10 dark:hover:bg-black/10 transition-all transform hover:scale-110" title="Data Hub"><i class="fas fa-database text-2xl"></i></a>
+                <a href="#map" class="nav-link p-3 rounded-full hover:bg-white/10 dark:hover:bg-black/10 transition-all transform hover:scale-110" title="Satellite View"><i class="fas fa-satellite text-2xl"></i></a>
+                <a href="#settings" class="nav-link p-3 rounded-full hover:bg-white/10 dark:hover:bg-black/10 transition-all transform hover:scale-110" title="User Hub"><i class="fas fa-user-astronaut text-2xl"></i></a>
+            </nav>
+            <div class="mt-auto text-center">
+                <button id="start-demo-btn" class="mb-2 p-3 rounded-full bg-green-500 hover:bg-green-400 text-white transition-all transform hover:scale-110" title="Start Demo"><i class="fas fa-play text-xl"></i></button>
+                <button id="start-tour-btn" class="mb-4 p-3 rounded-full bg-blue-500 hover:bg-blue-400 text-white transition-all transform hover:scale-110" title="Start Full Tour"><i class="fas fa-video text-xl"></i></button>
+                <p class="text-xs text-gray-500" data-i18n="footer.designed_by">Designed by</p>
+                <p class="text-sm font-bold text-white">Hassan Ahmed</p>
+            </div>
+        </aside>
+
+        <!-- Main content area -->
+        <main class="flex-1 overflow-hidden relative" id="main-content-area"></main>
+    </div>
+
+    <!-- Demo overlay -->
+    <div id="demo-overlay" class="fixed inset-0 z-50 pointer-events-none hidden">
+        <div id="demo-tooltip" class="absolute p-3 font-semibold text-base rounded-lg transition-opacity duration-300 opacity-0 pointer-events-none"></div>
+        <button id="replay-demo-btn" class="absolute bottom-10 right-10 p-3 rounded-full bg-green-500 text-white hover:bg-green-400 transition-all transform scale-0 pointer-events-auto" title="Replay Demo"><i class="fas fa-redo text-xl"></i></button>
+    </div>
+
+    <!-- Modal container (unused now but kept for future) -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 modal p-8 opacity-0">
+        <div id="modal-content-area" class="w-full"></div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mainContent = document.getElementById('main-content-area');
+        const state = {
+            activeZone: null,
+            chartInstances: {},
+            wizardEventHandler: null,
+            lastRunTour: 'short'
+        };
+
+        /* ==================== TEMPLATES ==================== */
+        const templates = {
+            dashboard: `
+                <div id="dashboard" class="cinematic-zone">
+                    <header class="mb-8"><h1 class="text-4xl font-extrabold" data-i18n="dashboard.title">AgriTech AI – Smart Farming Intelligence</h1></header>
+                    <div class="grid grid-cols-4 grid-rows-2 gap-8 h-[calc(100%-100px)]">
+                        <!-- Temperature -->
+                        <div id="widget-temp" class="card col-span-1 row-span-1 p-6 flex flex-col justify-between">
+                            <h3 class="font-bold text-lg" data-i18n="dashboard.temp">Temperature</h3>
+                            <div class="text-center my-4"><p class="text-6xl font-bold">28<span class="text-3xl align-top">°C</span></p></div>
+                            <div class="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-yellow-400 to-red-500" style="width:70%"></div>
+                            </div>
+                        </div>
+                        <!-- Moisture -->
+                        <div id="widget-moisture" class="card col-span-1 row-span-1 p-6 flex flex-col justify-between">
+                            <h3 class="font-bold text-lg" data-i18n="dashboard.moisture">Soil Moisture</h3>
+                            <div class="relative flex-1 flex items-center justify-center my-4">
+                                <div class="w-24 h-32 border-2 border-blue-300 rounded-2xl flex flex-col-reverse overflow-hidden">
+                                    <div id="water-level" class="water-fill w-full bg-blue-500" style="height:0%"></div>
+                                </div>
+                                <p class="absolute text-3xl font-bold">52%</p>
+                            </div>
+                        </div>
+                        <!-- Soil Chart -->
+                        <div class="card col-span-2 row-span-2 p-6">
+                            <h3 class="font-bold text-lg" data-i18n="dashboard.nutrients">Soil pH / Salinity (ppm)</h3>
+                            <canvas id="soilChart"></canvas>
+                        </div>
+                        <!-- Humidity -->
+                        <div class="card col-span-1 row-span-1 p-4 flex flex-col items-center justify-center">
+                            <h3 class="font-bold text-lg mb-2" data-i18n="dashboard.humidity">Humidity</h3>
+                            <div class="relative w-full h-full flex items-center justify-center">
+                                <i class="fas fa-cloud text-8xl text-indigo-200 opacity-20"></i>
+                                <p class="absolute text-5xl font-bold">65%</p>
+                            </div>
+                        </div>
+                        <!-- AI Status -->
+                        <div id="widget-ai-status" class="card col-span-1 row-span-1 p-6 flex flex-col items-center justify-center">
+                            <h3 class="font-bold text-lg mb-4" data-i18n="dashboard.ai_status">AI Status</h3>
+                            <div class="relative w-32 h-32">
+                                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="54" fill="none" class="stroke-current text-gray-200 dark:text-white/10" stroke-width="12"/>
+                                    <circle id="ai-status-ring" cx="60" cy="60" r="54" fill="none" stroke="#48BB78" stroke-width="12" stroke-linecap="round" stroke-dasharray="339" stroke-dashoffset="339" class="transition-all duration-1000"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <i class="fas fa-check text-4xl text-green-400 opacity-0 transition-opacity" id="ai-status-check"></i>
+                                </div>
+                            </div>
+                            <p class="mt-4 text-center text-sm text-gray-400" data-i18n="dashboard.ai_status_desc">All models are active & learning.</p>
+                        </div>
+                    </div>
+                    <footer class="absolute bottom-8 left-1/2 -translate-x-1/2 text-sm text-gray-400" data-i18n="dashboard.footer">Data refreshed 2 mins ago | Source: IoT Sensors Network.</footer>
+                </div>`,
+
+            insights: `<div id="insights" class="cinematic-zone">
+                    <header class="mb-8"><h1 class="text-4xl font-extrabold" data-i18n="insights.title">AI Insight Center</h1></header>
+                    <div class="flex gap-8 h-[calc(100%-100px)]">
+                        <div class="w-1/2 space-y-8 flex flex-col">
+                            <!-- Disease -->
+                            <div id="insight-disease" class="card p-6">
+                                <h3 class="font-bold text-xl mb-4" data-i18n="insights.disease">Disease Forecasts</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-4"><span class="text-2xl">Wheat</span><div class="flex-1"><div class="flex justify-between mb-1"><span data-i18n="insights.wheat">Wheat</span><span class="font-bold">15%</span></div><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"><div class="bg-green-600 h-2.5 rounded-full" style="width:15%"></div></div></div></div>
+                                    <div class="flex items-center gap-4"><span class="text-2xl">Corn</span><div class="flex-1"><div class="flex justify-between mb-1"><span data-i18n="insights.corn">Corn</span><span class="font-bold">82%</span></div><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"><div class="bg-red-600 h-2.5 rounded-full" style="width:82%"></div></div></div></div>
+                                    <div class="flex items-center gap-4"><span class="text-2xl">Tomato</span><div class="flex-1"><div class="flex justify-between mb-1"><span data-i18n="insights.tomato">Tomato</span><span class="font-bold">45%</span></div><div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5"><div class="bg-yellow-500 h-2.5 rounded-full" style="width:45%"></div></div></div></div>
+                                </div>
+                            </div>
+                            <!-- Irrigation -->
+                            <div class="card p-6">
+                                <h3 class="font-bold text-xl mb-4" data-i18n="insights.irrigation">Irrigation Plan</h3>
+                                <div class="text-center">
+                                    <p class="text-gray-400" data-i18n="insights.next_irrigation">Next irrigation in</p>
+                                    <p class="text-5xl font-bold my-2" data-i18n="insights.duration">6 Hours</p>
+                                    <p class="font-semibold" data-i18n="insights.estimated_need">Estimated need: 180 Liters/Feddan</p>
+                                </div>
+                            </div>
+                            <!-- Nutrients -->
+                            <div class="card p-6 flex-1">
+                                <h3 class="font-bold text-xl mb-4" data-i18n="insights.nutrients">Nutrient Balance</h3>
+                                <p class="text-center text-gray-400" data-i18n="insights.nutrients_desc">AI recommends a fertilizer mix with a balanced NPK ratio.</p>
+                                <canvas id="npkChart"></canvas>
+                            </div>
+                        </div>
+                        <!-- Chat -->
+                        <div class="w-1/2 card glassmorphism p-6 flex flex-col">
+                            <h3 class="font-bold text-xl mb-4" data-i18n="insights.chat_title">Chat with AgriTech AI</h3>
+                            <div id="chat-window" class="flex-1 bg-black/20 rounded-lg p-4 flex flex-col gap-4 overflow-y-auto">
+                                <div class="flex gap-3 items-start">
+                                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center flex-shrink-0"><i class="fas fa-robot"></i></div>
+                                    <div class="p-3 rounded-lg bg-green-800 self-start max-w-xs" data-i18n="insights.chat_welcome">Hello! How can I help with your farm today?</div>
+                                </div>
+                            </div>
+                            <form id="chat-form" class="mt-4 flex items-center gap-2">
+                                <input id="chat-input" type="text" placeholder="Ask the AI..." data-i18n-placeholder="insights.chat_placeholder" class="flex-1 p-3 bg-white/10 rounded-lg border-none placeholder-gray-400 focus:ring-2 focus:ring-green-500 outline-none">
+                                <button type="submit" class="w-12 h-12 rounded-lg bg-green-500 flex items-center justify-center"><i class="fas fa-paper-plane text-xl"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </div>`,
+
+            input: `<div id="input" class="cinematic-zone">
+                    <header class="mb-8"><h1 class="text-4xl font-extrabold" data-i18n="input.title">Data Input & IoT Sync Hub</h1></header>
+                    <div class="card max-w-4xl mx-auto p-8">
+                        <h2 class="text-2xl font-bold mb-6 text-center" data-i18n="input.wizard_title">Field Setup Wizard</h2>
+                        <div class="flex justify-between items-center gap-4 mb-8 progress-bar relative">
+                            <div class="absolute top-1/2 left-0 w-full h-1 bg-gray-300 dark:bg-gray-600 -translate-y-1/2"></div>
+                            <div id="progress-line" class="absolute top-1/2 h-1 bg-green-500 rounded-full" style="width:0%;left:0;"></div>
+                            <div class="flex justify-between w-full">
+                                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center bg-green-500">1</div>
+                                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600">2</div>
+                                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600">3</div>
+                                <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center bg-gray-300 dark:bg-gray-600">4</div>
+                            </div>
+                        </div>
+                        <div id="wizard-content" class="text-center">
+                            <div id="step-1" class="wizard-step active">
+                                <h3 class="text-xl font-semibold mb-4" data-i18n="input.step1">Step 1: Select Crop Type</h3>
+                                <div class="flex justify-center gap-8 my-8">
+                                    <div class="selection-item p-6 border-2 border-green-500 rounded-2xl cursor-pointer" data-value="Corn"><span class="text-6xl">Corn</span><p class="font-bold mt-2" data-i18n="input.corn">Corn</p></div>
+                                    <div class="selection-item p-6 border-2 border-[var(--border)] rounded-2xl cursor-pointer" data-value="Wheat"><span class="text-6xl">Wheat</span><p class="font-bold mt-2" data-i18n="input.wheat">Wheat</p></div>
+                                    <div class="selection-item p-6 border-2 border-[var(--border)] rounded-2xl cursor-pointer" data-value="Tomatoes"><span class="text-6xl">Tomato</span><p class="font-bold mt-2" data-i18n="input.tomatoes">Tomatoes</p></div>
+                                </div>
+                            </div>
+                            <div id="step-2" class="wizard-step">
+                                <h3 class="text-xl font-semibold mb-4" data-i18n="input.step2">Step 2: Connect Sensor or Input Data</h3>
+                                <div class="flex justify-center gap-8 my-8">
+                                    <div class="selection-item p-6 border-2 border-[var(--border)] rounded-2xl cursor-pointer" data-value="IoT"><i class="fas fa-wifi text-6xl"></i><p class="font-bold mt-2" data-i18n="input.sync_iot">Sync with IoT Sensor</p></div>
+                                    <div class="selection-item p-6 border-2 border-[var(--border)] rounded-2xl cursor-pointer" data-value="Manual"><i class="fas fa-keyboard text-6xl"></i><p class="font-bold mt-2" data-i18n="input.manual_input">Enter Data Manually</p></div>
+                                </div>
+                            </div>
+                            <div id="step-3" class="wizard-step">
+                                <h3 class="text-xl font-semibold mb-4" data-i18n="input.step3">Step 3: Upload Crop Image (Optional)</h3>
+                                <div class="my-8 p-12 border-2 border-dashed border-gray-600 rounded-2xl cursor-pointer hover:bg-white/10 dark:hover:bg-black/20 transition"><i class="fas fa-cloud-upload-alt text-6xl text-gray-500"></i><p class="mt-4 font-semibold" data-i18n="input.upload_prompt">Click to upload an image for AI analysis</p></div>
+                            </div>
+                            <div id="step-4" class="wizard-step">
+                                <h3 class="text-xl font-semibold mb-4" data-i18n="input.step4">Step 4: Review and Submit</h3>
+                                <div class="text-left rtl:text-right my-8 p-6 bg-gray-200 dark:bg-gray-800 rounded-lg space-y-2">
+                                    <p><strong data-i18n="input.crop">Crop:</strong> <span id="summary-crop"></span></p>
+                                    <p><strong data-i18n="input.data_source">Data Source:</strong> <span id="summary-source"></span></p>
+                                    <p><strong data-i18n="input.image">Image:</strong> <span id="summary-image" data-i18n="input.image_skipped">Skipped</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-8 flex justify-between">
+                            <button id="wizard-back-btn" class="px-8 py-3 bg-gray-300 dark:bg-gray-600 font-bold rounded-lg hover:opacity-80 transition-opacity" data-i18n="input.back">Back</button>
+                            <button id="wizard-next-btn" class="px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 transition-colors" data-i18n="input.next_step">Next Step</button>
+                        </div>
+                    </div>
+                </div>`,
+
+            map: `<div id="map" class="cinematic-zone">
+                    <header class="mb-8"><h1 class="text-4xl font-extrabold" data-i18n="map.title">Interactive Satellite View</h1></header>
+                    <div id="map-container" class="card h-[calc(100%-100px)] p-8 relative flex flex-col gap-4 bg-gray-800 dark:bg-gray-900">
+                        <div class="flex-1 flex items-center justify-center p-4 rounded-lg bg-green-500/20 border-2 border-green-500"><h3 class="text-2xl font-bold" data-i18n="map.field_a_full">Field A - Wheat (Healthy)</h3></div>
+                        <div class="flex-1 flex items-center justify-center p-4 rounded-lg bg-yellow-500/20 border-2 border-yellow-500"><h3 class="text-2xl font-bold" data-i18n="map.field_b_full">Field B - Tomatoes (At Risk)</h3></div>
+                        <div class="flex-1 flex items-center justify-center p-4 rounded-lg bg-red-500/20 border-2 border-red-500"><h3 class="text-2xl font-bold" data-i18n="map.field_c_full">Field C - Corn (Diseased)</h3></div>
+                        <div class="absolute top-4 right-4 card glassmorphism p-4 space-y-3 w-64 z-10">
+                            <h4 class="font-bold" data-i18n="map.layers">Map Layers</h4>
+                            <label class="flex items-center justify-between"><span class="text-sm" data-i18n="map.irrigation">Show Irrigation Lines</span><input type="checkbox" class="form-checkbox h-5 w-5 text-green-600 bg-gray-800 border-gray-600 rounded"></label>
+                            <label class="flex items-center justify-between"><span class="text-sm" data-i18n="map.diseased">Highlight Diseased Zones</span><input type="checkbox" id="highlight-diseased-toggle" class="form-checkbox h-5 w-5 text-green-600 bg-gray-800 border-gray-600 rounded" checked></label>
+                            <label class="flex items-center justify-between"><span class="text-sm" data-i18n="map.compare">Compare With Last Week</span><input type="checkbox" class="form-checkbox h-5 w-5 text-green-600 bg-gray-800 border-gray-600 rounded"></label>
+                        </div>
+                        <button class="absolute bottom-4 right-4 px-6 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-500 transition-colors z-10" data-i18n="map.report"><i class="fas fa-download mr-2"></i>Generate AI Report</button>
+                    </div>
+                </div>`,
+
+            settings: `<div id="settings" class="cinematic-zone">
+                    <header class="mb-8"><h1 class="text-4xl font-extrabold" data-i18n="settings.title">User Hub & Smart Settings</h1></header>
+                    <div class="max-w-4xl mx-auto space-y-8">
+                        <div class="card p-6 rounded-xl flex items-center gap-6">
+                            <img src="https://placehold.co/100x100/A0AEC0/FFFFFF?text=HA" alt="User" class="w-24 h-24 rounded-full">
+                            <div>
+                                <h3 class="text-2xl font-bold" data-i18n="settings.name">Hassan Ahmed</h3>
+                                <p class="font-semibold text-green-400" data-i18n="settings.role">Founder & Lead Developer</p>
+                                <p class="text-gray-500 dark:text-gray-400 mt-1" data-i18n="settings.location">Location: Alexandria, Egypt</p>
+                                <p class="text-green-500 font-semibold mt-1" data-i18n="settings.devices"><i class="fas fa-check-circle mr-1"></i>3 Devices Synced</p>
+                            </div>
+                        </div>
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="text-xl font-bold mb-4" data-i18n="settings.prefs">Preferences</h3>
+                            <div class="flex items-center justify-between py-4 border-b border-[var(--border)]">
+                                <label data-i18n="settings.language">Language</label>
+                                <div class="flex items-center gap-2 font-semibold">
+                                    <span data-i18n="settings.english">English</span>
+                                    <input type="checkbox" id="lang-toggle" class="hidden toggle-checkbox">
+                                    <label for="lang-toggle" class="toggle-label relative w-12 h-6 bg-gray-300 dark:bg-gray-600 rounded-full cursor-pointer transition-colors"><div class="toggle-ball absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div></label>
+                                    <span data-i18n="settings.arabic">العربية</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between py-4">
+                                <label data-i18n="settings.theme">Theme</label>
+                                <div class="flex items-center gap-2 font-semibold">
+                                    <span data-i18n="settings.light">Light</span>
+                                    <input type="checkbox" id="theme-toggle" class="hidden toggle-checkbox">
+                                    <label for="theme-toggle" class="toggle-label relative w-12 h-6 bg-gray-300 dark:bg-gray-600 rounded-full cursor-pointer transition-colors"><div class="toggle-ball absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform"></div></label>
+                                    <span data-i18n="settings.dark">Dark</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`
+        };
+
+        /* ==================== LOCALIZATION ==================== */
+        const translations = {
+            en: {
+                "loading.title": "AgriTech AI",
+                "loading.tagline": "Intelligence that grows with nature.",
+                "loading.credit": "A project by Hassan Ahmed",
+                "loading.status": "Initializing AI Core...",
+
+                "footer.designed_by": "Designed by",
+
+                "dashboard.title": "AgriTech AI – Smart Farming Intelligence",
+                "dashboard.temp": "Temperature",
+                "dashboard.moisture": "Soil Moisture",
+                "dashboard.nutrients": "Soil pH / Salinity (ppm)",
+                "dashboard.humidity": "Humidity",
+                "dashboard.ai_status": "AI Status",
+                "dashboard.ai_status_desc": "All models are active & learning.",
+                "dashboard.footer": "Data refreshed 2 mins ago | Source: IoT Sensors Network.",
+
+                "insights.title": "AI Insight Center",
+                "insights.disease": "Disease Forecasts",
+                "insights.wheat": "Wheat",
+                "insights.corn": "Corn",
+                "insights.tomato": "Tomato",
+                "insights.irrigation": "Irrigation Plan",
+                "insights.next_irrigation": "Next irrigation in",
+                "insights.duration": "6 Hours",
+                "insights.estimated_need": "Estimated need: 180 Liters/Feddan",
+                "insights.nutrients": "Nutrient Balance",
+                "insights.nutrients_desc": "AI recommends a fertilizer mix with a balanced NPK ratio.",
+                "insights.chat_title": "Chat with AgriTech AI",
+                "insights.chat_welcome": "Hello! How can I help with your farm today?",
+                "insights.chat_placeholder": "Ask the AI...",
+                "insights.ai_response": "Based on current soil moisture and weather forecasts, the optimal time to irrigate corn is in the next 4-6 hours. This will ensure deep root hydration before the peak heat of the day.",
+
+                "input.title": "Data Input & IoT Sync Hub",
+                "input.wizard_title": "Field Setup Wizard",
+                "input.step1": "Step 1: Select Crop Type",
+                "input.step2": "Step 2: Connect Sensor or Input Data",
+                "input.step3": "Step 3: Upload Crop Image (Optional)",
+                "input.step4": "Step 4: Review and Submit",
+                "input.corn": "Corn",
+                "input.wheat": "Wheat",
+                "input.tomatoes": "Tomatoes",
+                "input.next_step": "Next Step",
+                "input.back": "Back",
+                "input.sync_iot": "Sync with IoT Sensor",
+                "input.manual_input": "Enter Data Manually",
+                "input.upload_prompt": "Click to upload an image for AI analysis",
+                "input.crop": "Crop",
+                "input.data_source": "Data Source",
+                "input.image": "Image",
+                "input.image_skipped": "Skipped",
+                "input.submit": "Submit Data",
+
+                "map.title": "Interactive Satellite View",
+                "map.layers": "Map Layers",
+                "map.irrigation": "Show Irrigation Lines",
+                "map.diseased": "Highlight Diseased Zones",
+                "map.compare": "Compare With Last Week",
+                "map.report": "Generate AI Report",
+                "map.field_a_full": "Field A - Wheat (Healthy)",
+                "map.field_b_full": "Field B - Tomatoes (At Risk)",
+                "map.field_c_full": "Field C - Corn (Diseased)",
+
+                "settings.title": "User Hub & Smart Settings",
+                "settings.name": "Hassan Ahmed",
+                "settings.role": "Founder & Lead Developer",
+                "settings.location": "Location: Alexandria, Egypt",
+                "settings.devices": "3 Devices Synced",
+                "settings.prefs": "Preferences",
+                "settings.language": "Language",
+                "settings.english": "English",
+                "settings.arabic": "العربية",
+                "settings.theme": "Theme",
+                "settings.light": "Light",
+                "settings.dark": "Dark"
+            },
+            ar: {
+                "loading.title": "أجريتك بالذكاء الاصطناعي",
+                "loading.tagline": "ذكاء ينمو مع الطبيعة.",
+                "loading.credit": "مشروع مقدم من حسن أحمد",
+                "loading.status": "تهيئة نواة الذكاء الاصطناعي...",
+
+                "footer.designed_by": "تصميم",
+
+                "dashboard.title": "AgriTech AI – لوحة تحكم الزراعة الذكية",
+                "dashboard.temp": "درجة الحرارة",
+                "dashboard.moisture": "رطوبة التربة",
+                "dashboard.nutrients": "حموضة وملوحة التربة (ppm)",
+                "dashboard.humidity": "الرطوبة",
+                "dashboard.ai_status": "حالة الذكاء الاصطناعي",
+                "dashboard.ai_status_desc": "جميع النماذج نشطة وتتعلم باستمرار.",
+                "dashboard.footer": "آخر تحديث للبيانات منذ دقيقتين | المصدر: شبكة مستشعرات IoT.",
+
+                "insights.title": "مركز رؤى الذكاء الاصطناعي",
+                "insights.disease": "توقعات الأمراض",
+                "insights.wheat": "القمح",
+                "insights.corn": "الذرة",
+                "insights.tomato": "الطماطم",
+                "insights.irrigation": "خطة الري",
+                "insights.next_irrigation": "الري التالي خلال",
+                "insights.duration": "٦ ساعات",
+                "insights.estimated_need": "الحاجة المقدرة: ١٨٠ لتر/فدان",
+                "insights.nutrients": "توازن العناصر الغذائية",
+                "insights.nutrients_desc": "يوصي الذكاء الاصطناعي بمزيج سماد متوازن.",
+                "insights.chat_title": "تحدث مع AgriTech AI",
+                "insights.chat_welcome": "مرحباً! كيف يمكنني مساعدتك في مزرعتك اليوم؟",
+                "insights.chat_placeholder": "اسأل الذكاء الاصطناعي...",
+                "insights.ai_response": "بناءً على رطوبة التربة الحالية وتوقعات الطقس، فإن الوقت الأمثل لري الذرة هو في غضون 4-6 ساعات القادمة. هذا يضمن ترطيبًا عميقًا للجذور قبل ذروة حرارة النهار.",
+
+                "input.title": "مركز إدخال البيانات ومزامنة IoT",
+                "input.wizard_title": "معالج إعداد الحقل",
+                "input.step1": "الخطوة ١: اختر نوع المحصول",
+                "input.step2": "الخطوة ٢: ربط الحساسات أو إدخال البيانات",
+                "input.step3": "الخطوة ٣: رفع صورة المحصول (اختياري)",
+                "input.step4": "الخطوة ٤: المراجعة والإرسال",
+                "input.corn": "ذرة",
+                "input.wheat": "قمح",
+                "input.tomatoes": "طماطم",
+                "input.next_step": "الخطوة التالية",
+                "input.back": "رجوع",
+                "input.sync_iot": "مزامنة مع حساس IoT",
+                "input.manual_input": "إدخال البيانات يدوياً",
+                "input.upload_prompt": "انقر لرفع صورة للتحليل بالذكاء الاصطناعي",
+                "input.crop": "المحصول",
+                "input.data_source": "مصدر البيانات",
+                "input.image": "الصورة",
+                "input.image_skipped": "تم التخطي",
+                "input.submit": "إرسال البيانات",
+
+                "map.title": "عرض الخريطة التفاعلية بالأقمار الصناعية",
+                "map.layers": "طبقات الخريطة",
+                "map.irrigation": "إظهار خطوط الري",
+                "map.diseased": "تحديد المناطق المصابة",
+                "map.compare": "مقارنة بالأسبوع الماضي",
+                "map.report": "إنشاء تقرير الذكاء الاصطناعي",
+                "map.field_a_full": "حقل أ - قمح (صحي)",
+                "map.field_b_full": "حقل ب - طماطم (في خطر)",
+                "map.field_c_full": "حقل ج - ذرة (مصاب)",
+
+                "settings.title": "مركز المستخدم والإعدادات الذكية",
+                "settings.name": "حسن أحمد",
+                "settings.role": "المؤسس والمطور الرئيسي",
+                "settings.location": "الموقع: الإسكندرية، مصر",
+                "settings.devices": "٣ أجهزة متصلة",
+                "settings.prefs": "التفضيلات",
+                "settings.language": "اللغة",
+                "settings.english": "English",
+                "settings.arabic": "العربية",
+                "settings.theme": "المظهر",
+                "settings.light": "فاتح",
+                "settings.dark": "داكن"
+            }
+        };
+
+        function setLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key] !== undefined) el.innerHTML = translations[lang][key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (translations[lang][key] !== undefined) el.placeholder = translations[lang][key];
+            });
+            localStorage.setItem('language', lang);
+            const toggle = document.getElementById('lang-toggle');
+            if (toggle) toggle.checked = (lang === 'ar');
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'dark') document.documentElement.classList.add('dark');
+            else document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', theme);
+            const toggle = document.getElementById('theme-toggle');
+            if (toggle) toggle.checked = (theme === 'dark');
+        }
+
+        /* ==================== NAVIGATION ==================== */
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function setActiveZone(targetId) {
+            if (state.activeZone === targetId && document.getElementById(targetId)) return;
+            state.activeZone = targetId;
+            mainContent.innerHTML = templates[targetId];
+
+            // Render section-specific logic
+            if (targetId === 'dashboard') renderDashboard();
+            if (targetId === 'insights') { renderInsightsChart(); setupChat(); }
+            if (targetId === 'input') setupWizard();
+            if (targetId === 'map') setupMap();
+            if (targetId === 'settings') setupGlobalListeners();
+
+            setLanguage(localStorage.getItem('language') || 'en');
+
+            setTimeout(() => {
+                const zone = document.getElementById(targetId);
+                if (zone) zone.classList.add('active');
+            }, 50);
+
+            navLinks.forEach(l => {
+                const active = l.hash === `#${targetId}`;
+                l.classList.toggle('bg-white/10', active);
+                l.classList.toggle('dark:bg-black/20', active);
+                l.classList.toggle('text-green-400', active);
+            });
+
+            window.location.hash = targetId;
+        }
+
+        navLinks.forEach(l => l.addEventListener('click', e => {
+            e.preventDefault();
+            setActiveZone(e.currentTarget.hash.substring(1));
+        }));
+
+        /* ==================== DASHBOARD ==================== */
+        function renderDashboard() {
+            const ctx = document.getElementById('soilChart')?.getContext('2d');
+            if (!ctx) return;
+            if (state.chartInstances.soil) state.chartInstances.soil.destroy();
+
+            state.chartInstances.soil = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Soil pH', 'Salinity (ppm)'],
+                    datasets: [
+                        { label: 'Current Level', data: [6.8, 1200], backgroundColor: ['#E76F51', '#48BB78'], borderRadius: 8, barPercentage: 0.5 },
+                        { label: 'Optimal Range', data: [6.5, 1000], backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 8, barPercentage: 0.5 }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: 'var(--text)' } } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'var(--text)', font: { size: 14 } } },
+                        x: { grid: { display: false }, ticks: { color: 'var(--text)' } }
+                    }
+                }
+            });
+
+            setTimeout(() => {
+                const water = document.getElementById('water-level');
+                if (water) water.style.height = '52%';
+                const ring = document.getElementById('ai-status-ring');
+                if (ring) ring.style.strokeDashoffset = '0';
+                setTimeout(() => {
+                    const check = document.getElementById('ai-status-check');
+                    if (check) check.style.opacity = '1';
+                }, 1000);
+            }, 500);
+        }
+
+        /* ==================== INSIGHTS ==================== */
+        function renderInsightsChart() {
+            const ctx = document.getElementById('npkChart')?.getContext('2d');
+            if (!ctx) return;
+            if (state.chartInstances.npk) state.chartInstances.npk.destroy();
+
+            state.chartInstances.npk = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Nitrogen (N)', 'Phosphorus (P)', 'Potassium (K)'],
+                    datasets: [{ data: [45, 25, 30], backgroundColor: ['#2d6a4f', '#40916c', '#52b788'], borderColor: 'var(--card)' }]
+                },
+                options: {
+                    responsive: true,
+                    cutout: '70%',
+                    plugins: { legend: { position: 'bottom', labels: { color: 'var(--text)' } } }
+                }
+            });
+        }
+
+        function setupChat() {
+            const form = document.getElementById('chat-form');
+            const input = document.getElementById('chat-input');
+            const win = document.getElementById('chat-window');
+            if (!form) return;
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const msg = input.value.trim();
+                if (!msg) return;
+
+                const user = document.createElement('div');
+                user.className = 'p-3 rounded-lg bg-gray-700 self-end max-w-xs ml-auto';
+                user.textContent = msg;
+                win.appendChild(user);
+                input.value = '';
+                win.scrollTop = win.scrollHeight;
+
+                setTimeout(() => {
+                    const lang = localStorage.getItem('language') || 'en';
+                    const ai = document.createElement('div');
+                    ai.className = 'p-3 rounded-lg bg-green-800 self-start max-w-xs';
+                    ai.textContent = translations[lang]['insights.ai_response'];
+                    win.appendChild(ai);
+                    win.scrollTop = win.scrollHeight;
+                }, 1000);
+            });
+        }
+
+        /* ==================== INPUT WIZARD ==================== */
+        function setupWizard() {
+            let currentStep = 1;
+            const wizardData = { crop: 'Corn', source: null, image: false };
+            const steps = document.querySelectorAll('#input .wizard-step');
+            const nextBtn = document.getElementById('wizard-next-btn');
+            const backBtn = document.getElementById('wizard-back-btn');
+            const progressLine = document.getElementById('progress-line');
+            const progressNodes = document.querySelectorAll('.progress-bar > div > div');
+            const content = document.getElementById('wizard-content');
+
+            function updateView() {
+                steps.forEach((s, i) => s.classList.toggle('active', i + 1 === currentStep));
+
+                const perc = ((currentStep - 1) / (steps.length - 1)) * 100;
+                progressLine.style.width = `${perc}%`;
+
+                progressNodes.forEach((n, i) => {
+                    n.classList.toggle('bg-green-500', i < currentStep);
+                    n.classList.toggle('bg-gray-300', i >= currentStep);
+                    n.classList.toggle('dark:bg-gray-600', i >= currentStep);
+                });
+
+                backBtn.style.display = currentStep === 1 ? 'none' : 'inline-block';
+                const lang = localStorage.getItem('language') || 'en';
+                nextBtn.textContent = currentStep === steps.length ? translations[lang]['input.submit'] : translations[lang]['input.next_step'];
+
+                if (currentStep === 4) {
+                    document.getElementById('summary-crop').textContent = wizardData.crop;
+                    document.getElementById('summary-source').textContent = wizardData.source || '-';
+                }
+            }
+
+            // Remove old handler if any
+            if (state.wizardEventHandler) content.removeEventListener('click', state.wizardEventHandler);
+            state.wizardEventHandler = e => {
+                const item = e.target.closest('.selection-item');
+                if (!item) return;
+                const step = item.closest('.wizard-step');
+                step.querySelectorAll('.selection-item').forEach(i => i.classList.replace('border-green-500', 'border-[var(--border)]'));
+                item.classList.replace('border-[var(--border)]', 'border-green-500');
+                if (step.id === 'step-1') wizardData.crop = item.dataset.value;
+                if (step.id === 'step-2') wizardData.source = item.dataset.value;
+            };
+            content.addEventListener('click', state.wizardEventHandler);
+
+            nextBtn.addEventListener('click', () => {
+                if (currentStep < steps.length) { currentStep++; updateView(); }
+                else alert('Data Submitted!');
+            });
+            backBtn.addEventListener('click', () => { if (currentStep > 1) { currentStep--; updateView(); } });
+            updateView();
+        }
+
+        function setupMap() { /* no logic needed for mockup */ }
+
+        function setupGlobalListeners() {
+            const themeToggle = document.getElementById('theme-toggle');
+            if (themeToggle) themeToggle.addEventListener('change', e => applyTheme(e.target.checked ? 'dark' : 'light'));
+
+            const langToggle = document.getElementById('lang-toggle');
+            if (langToggle) langToggle.addEventListener('change', e => setLanguage(e.target.checked ? 'ar' : 'en'));
+        }
+
+        /* ==================== INITIALISATION ==================== */
+        applyTheme(localStorage.getItem('theme') || 'dark');
+        setLanguage(localStorage.getItem('language') || 'en');
+        setActiveZone(window.location.hash.substring(1) || 'dashboard');
+
+        // Loading simulation
+        const loadingBar = document.getElementById('loading-bar');
+        const loadingStatus = document.getElementById('loading-status');
+        let prog = 0;
+        const loadingInterval = setInterval(() => {
+            prog += Math.random() * 25;
+            if (prog > 100) prog = 100;
+            loadingBar.style.width = prog + '%';
+
+            const lang = localStorage.getItem('language') || 'en';
+            if (prog >= 70) loadingStatus.textContent = translations[lang]['loading.credit'];
+            else if (prog >= 30) loadingStatus.textContent = translations[lang]['loading.tagline'];
+
+            if (prog >= 100) {
+                clearInterval(loadingInterval);
+                const overlay = document.getElementById('loading-overlay');
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 500);
+            }
+        }, 300);
+
+        /* ==================== DEMO / TOUR ==================== */
+        const startDemoBtn = document.getElementById('start-demo-btn');
+        const startTourBtn = document.getElementById('start-tour-btn');
+        const demoOverlay = document.getElementById('demo-overlay');
+        const replayBtn = document.getElementById('replay-demo-btn');
+        const tooltip = document.getElementById('demo-tooltip');
+        const ambient = document.getElementById('ambient-sound');
+        let demoRunning = false;
+
+        const synth = new Tone.Synth().toDestination();
+
+        const demoSteps = [
+            { zone: 'dashboard', highlight: '#widget-moisture', text: "Quick Demo: Real-time soil monitoring.", note: "C4", duration: 3000 },
+            { zone: 'insights', highlight: '#insight-disease', text: "Quick Demo: AI predicts disease risks.", note: "E4", duration: 3000 },
+            { zone: 'map', highlight: '#map-container', text: "Quick Demo: Visualizing farm health.", note: "G4", duration: 3000 }
+        ];
+
+        const tourSteps = [
+            { zone: 'dashboard', highlight: '#widget-moisture', text: "Monitoring live farm data like soil moisture.", note: "C4", duration: 5625 },
+            { zone: 'dashboard', highlight: '#soilChart', text: "Analyzing soil nutrients and pH levels.", note: "D4", duration: 5625 },
+            { zone: 'insights', highlight: '#insight-disease', text: "AI provides disease forecasts with probability scores.", note: "E4", duration: 5625 },
+            { zone: 'insights', highlight: '.glassmorphism', text: "Farmers can chat with the AI for instant advice.", note: "F5", duration: 5625 },
+            { zone: 'input', highlight: '.card', text: "Adding new field data through a simple wizard.", note: "G4", duration: 5625 },
+            { zone: 'map', highlight: '#map-container', text: "A satellite view gives a bird's-eye perspective.", note: "A4", duration: 5625 },
+            { zone: 'settings', highlight: '.card', text: "Managing user profile and preferences.", note: "B4", duration: 5625 },
+            { zone: 'dashboard', highlight: null, text: "AgriTech AI — Shaping Egypt’s Sustainable Farming Future.", note: "C5", duration: 5625 }
+        ];
+
+        async function runPresentation(steps, type) {
+            if (demoRunning) return;
+            demoRunning = true;
+            state.lastRunTour = type;
+            await Tone.start();
+            ambient.play().catch(() => {});
+            demoOverlay.style.display = 'block';
+            replayBtn.style.transform = 'scale(0)';
+
+            for (const s of steps) {
+                document.querySelectorAll('.highlight-demo').forEach(el => el.classList.remove('highlight-demo'));
+
+                setActiveZone(s.zone);
+                await new Promise(r => setTimeout(r, 800));
+
+                synth.triggerAttackRelease(s.note, "8n");
+
+                const el = s.highlight ? document.querySelector(s.highlight) : null;
+                tooltip.textContent = s.text;
+                if (el) {
+                    const r = el.getBoundingClientRect();
+                    tooltip.style.top = `${r.top - 40}px`;
+                    tooltip.style.left = `${r.left + r.width/2}px`;
+                    tooltip.style.transform = 'translateX(-50%)';
+                    el.classList.add('highlight-demo');
+                } else {
+                    tooltip.style.top = '50%';
+                    tooltip.style.left = '50%';
+                    tooltip.style.transform = 'translate(-50%, -50%)';
+                }
+                tooltip.style.opacity = '1';
+                await new Promise(r => setTimeout(r, s.duration));
+                tooltip.style.opacity = '0';
+            }
+
+            document.querySelectorAll('.highlight-demo').forEach(el => el.classList.remove('highlight-demo'));
+            replayBtn.style.transform = 'scale(1)';
+            demoRunning = false;
+        }
+
+        startDemoBtn.addEventListener('click', () => runPresentation(demoSteps, 'short'));
+        startTourBtn.addEventListener('click', () => {
+            applyTheme('dark');
+            setLanguage('en');
+            setTimeout(() => runPresentation(tourSteps, 'full'), 100);
+        });
+        replayBtn.addEventListener('click', () => {
+            ambient.pause(); ambient.currentTime = 0;
+            if (state.lastRunTour === 'full') {
+                applyTheme('dark'); setLanguage('en');
+                setTimeout(() => runPresentation(tourSteps, 'full'), 100);
+            } else runPresentation(demoSteps, 'short');
+        });
+    });
+    </script>
+</body>
+</html>
