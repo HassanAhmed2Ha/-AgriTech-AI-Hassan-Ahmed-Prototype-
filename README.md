@@ -1,4 +1,4 @@
-# 🌾 AgriTech AI – Smart Farming for a Sustainable Future
+#  AgriTech AI – Smart Farming for a Sustainable Future
 
 **Founder & AI/UX Lead:** Hassan Ahmed  
 📍 Alexandria, Egypt  
@@ -7,7 +7,7 @@
 
 ---
 
-## ⚠️ Problem Statement
+##  Problem Statement
 
 Egyptian farmers face growing challenges such as unpredictable crop diseases, inefficient irrigation, and overuse of pesticides — all caused by limited access to **real-time agricultural data**.  
 These issues lead to:
